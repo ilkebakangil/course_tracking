@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CourseTrack — Academic Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0f14;
+    --surface: #141820;
+    --surface2: #1c2230;
+    --border: #252d3d;
+    --accent: #5b8cff;
+    --accent2: #ff6b6b;
+    --accent3: #43e97b;
+    --accent4: #f7971e;
+    --text: #e8ecf4;
+    --text-muted: #6b7a99;
+    --text-dim: #3d4a63;
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(12,15,20,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.03em;
+  }
+
+  .logo span { color: var(--accent); }
+
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* LAYOUT */
+  .main-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: calc(100vh - 73px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: sticky;
+    top: 73px;
+    height: calc(100vh - 73px);
+    overflow-y: auto;
+  }
+
+  .sidebar-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    padding: 4px 12px 12px;
+  }
+
+  .semester-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .semester-btn:hover { background: var(--surface); color: var(--text); }
+
+  .semester-btn.active {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .semester-btn.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 60%;
+    background: var(--accent);
+    border-radius: 0 3px 3px 0;
+  }
+
+  .semester-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .sem-count {
+    margin-left: auto;
+    font-size: 0.7rem;
+    background: var(--border);
+    padding: 2px 7px;
+    border-radius: 20px;
+    color: var(--text-muted);
+  }
+
+  .sidebar-add-btn {
+    margin-top: 12px;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    color: var(--text-muted);
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+
+  .sidebar-add-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* MAIN CONTENT */
+  .content {
+    padding: 36px 40px;
+    max-width: 960px;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 36px;
+  }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+
+  .page-subtitle {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .stat-card.blue::after { background: var(--accent); }
+  .stat-card.red::after { background: var(--accent2); }
+  .stat-card.green::after { background: var(--accent3); }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* SECTION TITLE */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* COURSE GRID */
+  .course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .course-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .course-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(91,140,255,0.08);
+  }
+
+  .course-card-accent {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .course-code {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+  }
+
+  .course-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+
+  .course-instructor {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .exam-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 16px;
+  }
+
+  .exam-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .exam-type-badge {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-midterm { background: rgba(247,151,30,0.15); color: var(--accent4); }
+  .badge-final   { background: rgba(255,107,107,0.15); color: var(--accent2); }
+  .badge-quiz    { background: rgba(91,140,255,0.15); color: var(--accent); }
+  .badge-project { background: rgba(67,233,123,0.15); color: var(--accent3); }
+
+  .exam-date {
+    color: var(--text);
+    font-size: 0.75rem;
+  }
+
+  .exam-countdown {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 20px;
+    background: var(--bg);
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .exam-countdown.soon { background: rgba(255,107,107,0.1); color: var(--accent2); }
+  .exam-countdown.near { background: rgba(247,151,30,0.1); color: var(--accent4); }
+
+  .exam-delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 2px 4px;
+    transition: color 0.2s;
+    line-height: 1;
+  }
+  .exam-delete-btn:hover { color: var(--accent2); }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .btn-sm {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .btn-outline {
+    background: none;
+    color: var(--text-muted);
+  }
+  .btn-outline:hover { background: var(--surface2); border-color: var(--accent); color: var(--accent); }
+
+  .btn-danger {
+    background: none;
+    color: var(--text-dim);
+    border-color: transparent;
+  }
+  .btn-danger:hover { background: rgba(255,107,107,0.1); color: var(--accent2); border-color: rgba(255,107,107,0.2); }
+
+  /* EXAMS UPCOMING */
+  .exam-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+
+  .timeline-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .timeline-item:hover { border-color: var(--border); background: var(--surface2); }
+
+  .timeline-date-box {
+    text-align: center;
+    min-width: 48px;
+  }
+
+  .tl-day {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .tl-month {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+
+  .tl-divider {
+    width: 1px;
+    height: 36px;
+    background: var(--border);
+  }
+
+  .tl-info { flex: 1; }
+
+  .tl-course {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+
+  .tl-exam-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .tl-semester {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  /* BUTTONS */
+  .btn-primary {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .btn-primary:hover { background: #4a7be8; transform: translateY(-1px); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .empty-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .empty-sub { font-size: 0.8rem; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    width: 100%;
+    max-width: 480px;
+    transform: scale(0.96) translateY(8px);
+    transition: transform 0.25s;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  }
+
+  .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .form-group { margin-bottom: 16px; }
+
+  label {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 7px;
+  }
+
+  input, select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input:focus, select:focus { border-color: var(--accent); }
+  select option { background: var(--surface); }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    justify-content: flex-end;
+  }
+
+  .btn-ghost {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+  /* COLOR PICKER */
+  .color-picker-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .color-dot {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .color-dot.selected { border-color: #fff; transform: scale(1.15); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    color: var(--text);
+    z-index: 999;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-left: 3px solid var(--accent3); }
+  .toast.error   { border-left: 3px solid var(--accent2); }
+
+  /* TAB VIEW */
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 28px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    width: fit-content;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    padding: 8px 18px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tab-btn.active {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn 0.25s ease; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+  /* Delete semester btn */
+  .del-sem-btn {
+    background: none; border: none; color: var(--text-dim);
+    cursor: pointer; font-size: 0.75rem; margin-left: auto;
+    padding: 2px 5px; border-radius: 4px; transition: color 0.2s;
+    display: none;
+  }
+  .semester-btn:hover .del-sem-btn { display: block; }
+  .del-sem-btn:hover { color: var(--accent2); }
+
+  @media (max-width: 768px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .sidebar { position: relative; top: 0; height: auto; flex-direction: row; flex-wrap: wrap; overflow-x: auto; }
+    .content { padding: 24px 20px; }
+    header { padding: 18px 20px; }
+    .stats-bar { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Course<span>Track</span></div>
+  <div class="header-actions">
+    <button class="btn-primary" onclick="openModal('addCourseModal')">＋ Add Course</button>
+  </div>
+</header>
+
+<div class="main-layout">
+
+  <!-- SIDEBAR (semesters) -->
+  <aside class="sidebar" id="semesters-sidebar">
+    <div class="sidebar-title">Semesters</div>
+    <div id="semester-list"></div>
+    <button class="sidebar-add-btn" onclick="openModal('addSemesterModal')">＋ New Semester</button>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+    <div class="page-header">
+      <div>
+        <div class="page-title" id="page-title">All Courses</div>
+        <div class="page-subtitle" id="page-subtitle">Overview of all your courses and exams</div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-bar">
+      <div class="stat-card blue">
+        <div class="stat-value" id="stat-courses">0</div>
+        <div class="stat-label">Courses</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-value" id="stat-exams">0</div>
+        <div class="stat-label">Upcoming Exams</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-value" id="stat-next">—</div>
+        <div class="stat-label">Next Exam (days)</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('courses', this)">🎓 Courses</button>
+      <button class="tab-btn" onclick="switchTab('exams', this)">📅 Exam Schedule</button>
+    </div>
+
+    <!-- COURSES VIEW -->
+    <div class="view active" id="view-courses">
+      <div class="section-header">
+        <div class="section-title">My Courses</div>
+      </div>
+      <div class="course-grid" id="course-grid"></div>
+    </div>
+
+    <!-- EXAMS VIEW -->
+    <div class="view" id="view-exams">
+      <div class="section-header">
+        <div class="section-title">Upcoming Exams</div>
+      </div>
+      <div class="exam-timeline" id="exam-timeline"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- ADD SEMESTER MODAL -->
+<div class="modal-overlay" id="addSemesterModal">
+  <div class="modal">
+    <div class="modal-title">🗓 New Semester</div>
+    <div class="form-group">
+      <label>Semester Name</label>
+      <input type="text" id="sem-name" placeholder="e.g. Fall 2025, Spring 2026…" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('addSemesterModal')">Cancel</button>
+      <button class="btn-primary" onclick="addSemester()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD COURSE MODAL -->
+<div class="modal-overlay" id="addCourseModal">
+  <div class="modal">
+    <div class="modal-title">🎓 Add Course</div>
+    <div class="form-group">
+      <label>Course Name</label>
+      <input type="text" id="course-name" placeholder="e.g. Calculus II" />
+    </div>
+    <div class="form-group">
+      <label>Course Code</label>
+      <input type="text" id="course-code" placeholder="e.g. MATH 201" />
+    </div>
+    <div class="form-group">
+      <label>Instructor (optional)</label>
+      <input type="text" id="course-instructor" placeholder="Prof. Smith" />
+    </div>
+    <div class="form-group">
+      <label>Semester</label>
+      <select id="course-semester"></select>
+    </div>
+    <div class="form-group">
+      <label>Color Tag</label>
+      <div class="color-picker-row" id="color-picker"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('addCourseModal')">Cancel</button>
+      <button class="btn-primary" onclick="addCourse()">Add Course</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD EXAM MODAL -->
+<div class="modal-overlay" id="addExamModal">
+  <div class="modal">
+    <div class="modal-title">📝 Add Exam</div>
+    <input type="hidden" id="exam-course-id" />
+    <div class="form-group">
+      <label>Exam Name / Notes (optional)</label>
+      <input type="text" id="exam-name" placeholder="e.g. Chapters 1-5" />
+    </div>
+    <div class="form-group">
+      <label>Exam Type</label>
+      <select id="exam-type">
+        <option value="midterm">Midterm</option>
+        <option value="final">Final</option>
+        <option value="quiz">Quiz</option>
+        <option value="project">Project / Homework</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" id="exam-date" />
+    </div>
+    <div class="form-group">
+      <label>Time (optional)</label>
+      <input type="time" id="exam-time" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('addExamModal')">Cancel</button>
+      <button class="btn-primary" onclick="addExam()">Add Exam</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ──────────────────────────────────────────
+//  DATA
+// ──────────────────────────────────────────
+const COLORS = ['#5b8cff','#ff6b6b','#43e97b','#f7971e','#a78bfa','#06b6d4','#f472b6','#34d399'];
+let selectedColor = COLORS[0];
+
+let data = JSON.parse(localStorage.getItem('coursetrack') || 'null') || {
+  semesters: [{ id: 's1', name: 'Spring 2025' }],
+  courses: [],
+  activeSemester: 'all'
+};
+
+function save() { localStorage.setItem('coursetrack', JSON.stringify(data)); }
+
+// ──────────────────────────────────────────
+//  INIT
+// ──────────────────────────────────────────
+function init() {
+  buildColorPicker();
+  renderSidebar();
+  renderAll();
+}
+
+// ──────────────────────────────────────────
+//  SIDEBAR
+// ──────────────────────────────────────────
+function renderSidebar() {
+  const list = document.getElementById('semester-list');
+  list.innerHTML = '';
+
+  // "All" button
+  const allBtn = document.createElement('button');
+  allBtn.className = 'semester-btn' + (data.activeSemester === 'all' ? ' active' : '');
+  allBtn.innerHTML = `<span class="semester-dot" style="background:#5b8cff"></span> All Semesters
+    <span class="sem-count">${data.courses.length}</span>`;
+  allBtn.onclick = () => { data.activeSemester = 'all'; save(); renderSidebar(); renderAll(); };
+  list.appendChild(allBtn);
+
+  data.semesters.forEach((sem, i) => {
+    const count = data.courses.filter(c => c.semesterId === sem.id).length;
+    const clr = COLORS[i % COLORS.length];
+    const btn = document.createElement('button');
+    btn.className = 'semester-btn' + (data.activeSemester === sem.id ? ' active' : '');
+    btn.innerHTML = `<span class="semester-dot" style="background:${clr}"></span>
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${sem.name}</span>
+      <span class="sem-count">${count}</span>
+      <button class="del-sem-btn" title="Delete semester" onclick="deleteSemester('${sem.id}',event)">✕</button>`;
+    btn.onclick = (e) => {
+      if (e.target.classList.contains('del-sem-btn')) return;
+      data.activeSemester = sem.id; save(); renderSidebar(); renderAll();
+    };
+    list.appendChild(btn);
+  });
+
+  // populate semester select in add course modal
+  const sel = document.getElementById('course-semester');
+  sel.innerHTML = data.semesters.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+}
+
+// ──────────────────────────────────────────
+//  RENDER ALL
+// ──────────────────────────────────────────
+function renderAll() {
+  const courses = filteredCourses();
+  updateStats(courses);
+  renderCourses(courses);
+  renderExamTimeline();
+  const sem = data.semesters.find(s => s.id === data.activeSemester);
+  document.getElementById('page-title').textContent = sem ? sem.name : 'All Courses';
+  document.getElementById('page-subtitle').textContent =
+    `${courses.length} course${courses.length !== 1 ? 's' : ''} · ${countUpcomingExams(courses)} upcoming exam${countUpcomingExams(courses) !== 1 ? 's' : ''}`;
+}
+
+function filteredCourses() {
+  if (data.activeSemester === 'all') return data.courses;
+  return data.courses.filter(c => c.semesterId === data.activeSemester);
+}
+
+function countUpcomingExams(courses) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  return courses.reduce((n, c) => n + (c.exams || []).filter(e => new Date(e.date) >= today).length, 0);
+}
+
+// ──────────────────────────────────────────
+//  STATS
+// ──────────────────────────────────────────
+function updateStats(courses) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const upcoming = courses.flatMap(c => (c.exams||[]).filter(e => new Date(e.date) >= today));
+  document.getElementById('stat-courses').textContent = courses.length;
+  document.getElementById('stat-exams').textContent = upcoming.length;
+  if (upcoming.length) {
+    upcoming.sort((a,b) => new Date(a.date)-new Date(b.date));
+    const diff = Math.ceil((new Date(upcoming[0].date)-today) / 86400000);
+    document.getElementById('stat-next').textContent = diff === 0 ? 'Today!' : diff;
+  } else {
+    document.getElementById('stat-next').textContent = '—';
+  }
+}
+
+// ──────────────────────────────────────────
+//  COURSES
+// ──────────────────────────────────────────
+function renderCourses(courses) {
+  const grid = document.getElementById('course-grid');
+  if (!courses.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon">📚</div>
+      <div class="empty-title">No courses yet</div>
+      <div class="empty-sub">Add a course to get started</div>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = '';
+  courses.forEach(c => {
+    const sem = data.semesters.find(s => s.id === c.semesterId);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const exams = (c.exams || []).sort((a,b) => new Date(a.date)-new Date(b.date));
+    const examsHtml = exams.length ? exams.map(e => {
+      const d = new Date(e.date); const diff = Math.ceil((d-today)/86400000);
+      let cdClass = '', cdText = '';
+      if (diff < 0) { cdText = 'passed'; cdClass = ''; }
+      else if (diff === 0) { cdText = 'today!'; cdClass = 'soon'; }
+      else if (diff <= 3) { cdText = `${diff}d`; cdClass = 'soon'; }
+      else if (diff <= 7) { cdText = `${diff}d`; cdClass = 'near'; }
+      else { cdText = `${diff}d`; }
+      return `<div class="exam-item">
+        <span class="exam-type-badge badge-${e.type}">${e.type}</span>
+        <span class="exam-date">${formatDate(e.date)}${e.time ? ' ' + e.time : ''}</span>
+        <span class="exam-countdown ${cdClass}">${cdText}</span>
+        <button class="exam-delete-btn" title="Remove exam" onclick="deleteExam('${c.id}','${e.id}')">✕</button>
+      </div>`;
+    }).join('') : `<div style="font-size:0.75rem;color:var(--text-dim);padding:6px 0">No exams added yet</div>`;
+
+    const card = document.createElement('div');
+    card.className = 'course-card';
+    card.innerHTML = `
+      <div class="course-card-accent" style="background:${c.color}"></div>
+      <div class="course-code">${c.code || '—'} ${sem ? '· '+sem.name : ''}</div>
+      <div class="course-name">${c.name}</div>
+      ${c.instructor ? `<div class="course-instructor">👤 ${c.instructor}</div>` : ''}
+      <div class="exam-list">${examsHtml}</div>
+      <div class="card-actions">
+        <button class="btn-sm btn-outline" onclick="openAddExam('${c.id}')">＋ Exam</button>
+        <button class="btn-sm btn-danger" onclick="deleteCourse('${c.id}')">🗑 Delete</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ──────────────────────────────────────────
+//  EXAM TIMELINE
+// ──────────────────────────────────────────
+function renderExamTimeline() {
+  const tl = document.getElementById('exam-timeline');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const courses = filteredCourses();
+  let items = [];
+  courses.forEach(c => {
+    (c.exams||[]).forEach(e => {
+      const d = new Date(e.date);
+      if (d >= today) {
+        const sem = data.semesters.find(s => s.id === c.semesterId);
+        items.push({ ...e, courseName: c.name, courseColor: c.color, semName: sem?.name || '', d });
+      }
+    });
+  });
+  items.sort((a,b) => a.d - b.d);
+
+  if (!items.length) {
+    tl.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">🎉</div>
+      <div class="empty-title">No upcoming exams!</div>
+      <div class="empty-sub">You're all clear — or add exam dates to your courses</div>
+    </div>`;
+    return;
+  }
+  tl.innerHTML = '';
+  items.forEach(item => {
+    const day = item.d.getDate();
+    const mon = item.d.toLocaleString('default',{month:'short'}).toUpperCase();
+    const el = document.createElement('div');
+    el.className = 'timeline-item';
+    el.innerHTML = `
+      <div class="timeline-date-box">
+        <div class="tl-day" style="color:${item.courseColor}">${String(day).padStart(2,'0')}</div>
+        <div class="tl-month">${mon}</div>
+      </div>
+      <div class="tl-divider"></div>
+      <div class="tl-info">
+        <div class="tl-course">${item.courseName}</div>
+        <div class="tl-exam-name">${capitalize(item.type)}${item.name ? ' — '+item.name : ''}${item.time ? ' @ '+item.time : ''}</div>
+        <div class="tl-semester">${item.semName}</div>
+      </div>
+      <span class="exam-type-badge badge-${item.type}">${item.type}</span>`;
+    tl.appendChild(el);
+  });
+}
+
+// ──────────────────────────────────────────
+//  SEMESTER CRUD
+// ──────────────────────────────────────────
+function addSemester() {
+  const name = document.getElementById('sem-name').value.trim();
+  if (!name) return toast('Please enter a semester name', 'error');
+  data.semesters.push({ id: 's'+Date.now(), name });
+  document.getElementById('sem-name').value = '';
+  save(); renderSidebar(); closeModal('addSemesterModal');
+  toast('Semester created!', 'success');
+}
+
+function deleteSemester(id, e) {
+  e.stopPropagation();
+  if (!confirm('Delete this semester? Courses will remain but lose semester assignment.')) return;
+  data.semesters = data.semesters.filter(s => s.id !== id);
+  data.courses.forEach(c => { if (c.semesterId === id) c.semesterId = null; });
+  if (data.activeSemester === id) data.activeSemester = 'all';
+  save(); renderSidebar(); renderAll();
+  toast('Semester deleted', 'success');
+}
+
+// ──────────────────────────────────────────
+//  COURSE CRUD
+// ──────────────────────────────────────────
+function addCourse() {
+  const name = document.getElementById('course-name').value.trim();
+  const code = document.getElementById('course-code').value.trim();
+  const inst = document.getElementById('course-instructor').value.trim();
+  const semId = document.getElementById('course-semester').value;
+  if (!name) return toast('Course name is required', 'error');
+  if (!semId) return toast('Please create a semester first', 'error');
+  data.courses.push({ id: 'c'+Date.now(), name, code, instructor: inst, semesterId: semId, color: selectedColor, exams: [] });
+  document.getElementById('course-name').value = '';
+  document.getElementById('course-code').value = '';
+  document.getElementById('course-instructor').value = '';
+  save(); renderSidebar(); renderAll(); closeModal('addCourseModal');
+  toast('Course added!', 'success');
+}
+
+function deleteCourse(id) {
+  if (!confirm('Delete this course and all its exams?')) return;
+  data.courses = data.courses.filter(c => c.id !== id);
+  save(); renderSidebar(); renderAll();
+  toast('Course deleted', 'success');
+}
+
+// ──────────────────────────────────────────
+//  EXAM CRUD
+// ──────────────────────────────────────────
+function openAddExam(courseId) {
+  document.getElementById('exam-course-id').value = courseId;
+  document.getElementById('exam-name').value = '';
+  document.getElementById('exam-date').value = '';
+  document.getElementById('exam-time').value = '';
+  openModal('addExamModal');
+}
+
+function addExam() {
+  const courseId = document.getElementById('exam-course-id').value;
+  const name = document.getElementById('exam-name').value.trim();
+  const type = document.getElementById('exam-type').value;
+  const date = document.getElementById('exam-date').value;
+  const time = document.getElementById('exam-time').value;
+  if (!date) return toast('Please select a date', 'error');
+  const course = data.courses.find(c => c.id === courseId);
+  if (!course) return;
+  if (!course.exams) course.exams = [];
+  course.exams.push({ id: 'e'+Date.now(), name, type, date, time });
+  save(); renderAll(); closeModal('addExamModal');
+  toast('Exam added!', 'success');
+}
+
+function deleteExam(courseId, examId) {
+  const course = data.courses.find(c => c.id === courseId);
+  if (!course) return;
+  course.exams = (course.exams||[]).filter(e => e.id !== examId);
+  save(); renderAll();
+  toast('Exam removed', 'success');
+}
+
+// ──────────────────────────────────────────
+//  HELPERS
+// ──────────────────────────────────────────
+function formatDate(ds) {
+  const d = new Date(ds);
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('view-' + tab).classList.add('active');
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.className = 'toast'; }, 3000);
+}
+
+function buildColorPicker() {
+  const cp = document.getElementById('color-picker');
+  cp.innerHTML = '';
+  COLORS.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'color-dot' + (c === selectedColor ? ' selected' : '');
+    d.style.background = c;
+    d.onclick = () => {
+      selectedColor = c;
+      document.querySelectorAll('.color-dot').forEach(x => x.classList.remove('selected'));
+      d.classList.add('selected');
+    };
+    cp.appendChild(d);
+  });
+}
+
+// ──────────────────────────────────────────
+//  BOOT
+// ──────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
