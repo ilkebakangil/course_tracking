@@ -1,448 +1,608 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Satisfaction in Sephora Products</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Satisfaction in Sephora Products</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.7;
-            background-color: #f7f7f7;
-            color: #1f1f1f;
-        }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        header {
-            background: linear-gradient(135deg, #111827, #1f2937);
-            color: white;
-            padding: 100px 20px;
-            text-align: center;
-        }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f7f3ee;
+      color: #1f1f1f;
+      line-height: 1.8;
+    }
 
-        header h1 {
-            font-size: 3rem;
-            max-width: 1000px;
-            margin: 0 auto 20px;
-            line-height: 1.2;
-        }
+    img {
+      max-width: 100%;
+      display: block;
+    }
 
-        header p {
-            max-width: 850px;
-            margin: 0 auto;
-            font-size: 1.1rem;
-            color: #d1d5db;
-        }
+    .container {
+      width: min(1180px, 90%);
+      margin: auto;
+    }
 
-        nav {
-            background-color: white;
-            padding: 16px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid #e5e7eb;
-        }
+    /* NAVBAR */
 
-        nav ul {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 24px;
-            list-style: none;
-        }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      background: rgba(247, 243, 238, 0.88);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
 
-        nav a {
-            text-decoration: none;
-            color: #111827;
-            font-weight: 500;
-            transition: 0.2s ease;
-        }
+    nav .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+    }
 
-        nav a:hover {
-            color: #2563eb;
-        }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
 
-        .container {
-            width: min(1100px, 92%);
-            margin: auto;
-        }
+    nav ul {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      flex-wrap: wrap;
+    }
 
-        section {
-            padding: 80px 0;
-        }
+    nav a {
+      text-decoration: none;
+      color: #2b2b2b;
+      font-size: 0.95rem;
+      transition: 0.2s ease;
+    }
 
-        .card {
-            background: white;
-            border-radius: 18px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
+    nav a:hover {
+      color: #8b6b52;
+    }
 
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 24px;
-            color: #111827;
-        }
+    /* HERO */
 
-        h3 {
-            margin-top: 28px;
-            margin-bottom: 12px;
-            color: #1f2937;
-        }
+    .hero {
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 0;
+    }
 
-        p {
-            margin-bottom: 16px;
-            color: #374151;
-        }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 80px;
+      align-items: center;
+    }
 
-        ul {
-            padding-left: 20px;
-            margin-bottom: 16px;
-        }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 0.8rem;
+      color: #8b6b52;
+      margin-bottom: 20px;
+    }
 
-        li {
-            margin-bottom: 8px;
-        }
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 7vw, 6rem);
+      line-height: 0.95;
+      font-weight: 600;
+      margin-bottom: 28px;
+      color: #111111;
+    }
 
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
+    .hero p {
+      font-size: 1.08rem;
+      max-width: 620px;
+      color: #4b4b4b;
+      margin-bottom: 35px;
+    }
 
-        .team-member {
-            background: #f9fafb;
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid #e5e7eb;
-        }
+    .hero-card {
+      background: #efe7de;
+      border-radius: 32px;
+      padding: 45px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.06);
+    }
 
-        .figure {
-            margin-top: 40px;
-            text-align: center;
-        }
+    .hero-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      margin-bottom: 18px;
+    }
 
-        .figure img {
-            width: 100%;
-            border-radius: 14px;
-            border: 1px solid #d1d5db;
-        }
+    .hero-card ul {
+      padding-left: 18px;
+    }
 
-        .figure p {
-            margin-top: 12px;
-            font-size: 0.95rem;
-            color: #6b7280;
-        }
+    .hero-card li {
+      margin-bottom: 10px;
+      color: #555;
+    }
 
-        code {
-            background: #f3f4f6;
-            padding: 2px 6px;
-            border-radius: 6px;
-        }
+    /* GENERAL SECTIONS */
 
-        footer {
-            background: #111827;
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-            margin-top: 80px;
-        }
+    section {
+      padding: 110px 0;
+    }
 
-        footer a {
-            color: #93c5fd;
-            text-decoration: none;
-        }
+    .section-header {
+      margin-bottom: 55px;
+    }
 
-        .placeholder {
-            border: 2px dashed #d1d5db;
-            border-radius: 14px;
-            padding: 30px;
-            margin-top: 30px;
-            text-align: center;
-            color: #6b7280;
-            background: #fafafa;
-        }
-    </style>
+    .section-tag {
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 0.78rem;
+      color: #8b6b52;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.7rem, 5vw, 4rem);
+      line-height: 1;
+      margin-bottom: 18px;
+      color: #111;
+    }
+
+    .section-description {
+      max-width: 760px;
+      color: #525252;
+      font-size: 1.02rem;
+    }
+
+    /* CARDS */
+
+    .soft-card {
+      background: #fffdfb;
+      border-radius: 28px;
+      padding: 45px;
+      border: 1px solid rgba(0,0,0,0.05);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.04);
+    }
+
+    .soft-card p {
+      margin-bottom: 18px;
+      color: #4f4f4f;
+    }
+
+    .soft-card ul {
+      padding-left: 20px;
+      margin-top: 14px;
+    }
+
+    .soft-card li {
+      margin-bottom: 10px;
+    }
+
+    /* TEAM */
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .team-member {
+      background: #fffdfb;
+      padding: 35px;
+      border-radius: 24px;
+      text-align: center;
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: transform 0.25s ease;
+    }
+
+    .team-member:hover {
+      transform: translateY(-6px);
+    }
+
+    .team-member h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 500;
+    }
+
+    /* PREPROCESSING */
+
+    .steps {
+      display: grid;
+      gap: 22px;
+      margin-top: 40px;
+    }
+
+    .step {
+      background: #fffdfb;
+      border-radius: 22px;
+      padding: 28px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .step h3 {
+      margin-bottom: 12px;
+      font-size: 1.15rem;
+      color: #1f1f1f;
+    }
+
+    .step p {
+      color: #555;
+    }
+
+    /* FIGURES */
+
+    .figure-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 50px;
+      margin-top: 50px;
+    }
+
+    .figure-card {
+      background: #fffdfb;
+      padding: 26px;
+      border-radius: 28px;
+      border: 1px solid rgba(0,0,0,0.05);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.04);
+    }
+
+    .figure-card img {
+      border-radius: 18px;
+    }
+
+    .figure-card p {
+      margin-top: 18px;
+      color: #666;
+    }
+
+    /* PLACEHOLDER */
+
+    .placeholder {
+      margin-top: 40px;
+      border: 2px dashed rgba(0,0,0,0.12);
+      border-radius: 26px;
+      padding: 50px;
+      text-align: center;
+      background: rgba(255,255,255,0.55);
+      color: #7b7b7b;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 70px 0;
+      text-align: center;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      color: #666;
+    }
+
+    footer h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      margin-bottom: 14px;
+      color: #111;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      nav ul {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 80px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<header>
-    <div class="container">
-        <h1>Customer Satisfaction in Sephora Products: A Data-Driven Machine Learning Approach</h1>
+  <nav>
+    <div class="container nav-inner">
+      <div class="logo">Sephora ML Project</div>
 
-        <p>
-            This project investigates how customer satisfaction can be predicted using product metadata,
-            customer reviews, Aspect-Based Sentiment Analysis (ABSA), feature engineering,
-            and machine learning techniques.
-        </p>
-    </div>
-</header>
-
-<nav>
-    <ul>
+      <ul>
+        <li><a href="#about">About</a></li>
         <li><a href="#team">Team</a></li>
         <li><a href="#dataset">Dataset</a></li>
-        <li><a href="#preprocessing">Preprocessing</a></li>
-        <li><a href="#research">Research Questions</a></li>
+        <li><a href="#preprocessing">Pipeline</a></li>
         <li><a href="#results">Results</a></li>
         <li><a href="#discussion">Discussion</a></li>
-        <li><a href="#reproducibility">Reproducibility</a></li>
-    </ul>
-</nav>
-
-<section id="team">
-    <div class="container">
-        <div class="card">
-            <h2>Team Members</h2>
-
-            <div class="team-grid">
-                <div class="team-member">
-                    <h3>İlke Bakangil</h3>
-                </div>
-
-                <div class="team-member">
-                    <h3>Sıla Doğan</h3>
-                </div>
-
-                <div class="team-member">
-                    <h3>Avsu Evren</h3>
-                </div>
-
-                <div class="team-member">
-                    <h3>Yağmur Battal</h3>
-                </div>
-            </div>
-        </div>
+      </ul>
     </div>
-</section>
+  </nav>
 
-<section id="dataset">
-    <div class="container">
-        <div class="card">
-            <h2>Dataset Description</h2>
+  <section class="hero" id="about">
+    <div class="container hero-grid">
 
-            <p>
-                The dataset used in this project is the Sephora Products and Skincare Reviews dataset obtained from Kaggle.
-                It contains detailed information about skincare products and customer reviews collected from Sephora’s online platform.
-            </p>
+      <div>
+        <div class="eyebrow">Machine Learning • NLP • ABSA</div>
 
-            <p>
-                The dataset combines:
-            </p>
+        <h1>
+          Customer Satisfaction in Sephora Products
+        </h1>
 
-            <ul>
-                <li>Structured product information</li>
-                <li>Customer-related attributes</li>
-                <li>Unstructured textual review data</li>
-            </ul>
+        <p>
+          This project investigates how customer satisfaction can be predicted using product metadata,
+          review text, Aspect-Based Sentiment Analysis (ABSA), feature engineering,
+          and machine learning techniques.
+        </p>
 
-            <p>
-                The structured variables include brand information, product categories, prices,
-                ingredients, product highlights, and product ratings.
-            </p>
+        <p>
+          By combining structured product information with sentiment-based textual features,
+          the project aims to better understand customer behavior and personalization patterns
+          in beauty product experiences.
+        </p>
+      </div>
 
-            <p>
-                In addition, the dataset contains user characteristics such as skin type,
-                skin tone, and hair color.
-            </p>
+      <div class="hero-card">
+        <h3>Project Focus</h3>
 
-            <p>
-                The dataset contains over 8,000 products and approximately 1 million customer reviews,
-                making it highly suitable for machine learning and sentiment analysis applications.
-            </p>
+        <ul>
+          <li>Natural Language Processing (NLP)</li>
+          <li>Aspect-Based Sentiment Analysis (ABSA)</li>
+          <li>Customer Satisfaction Prediction</li>
+          <li>Feature Engineering</li>
+          <li>Class Imbalance Management</li>
+          <li>Machine Learning Model Comparison</li>
+        </ul>
+      </div>
 
-            <h3>Dataset Access</h3>
-
-            <p>
-                Due to its large size, the dataset is not stored directly in the repository.
-            </p>
-
-            <p>
-                Kaggle Source:
-                <br>
-                <a href="https://www.kaggle.com/datasets/nadyinky/sephora-products-and-skincare-reviews" target="_blank">
-                    Sephora Products and Skincare Reviews Dataset
-                </a>
-            </p>
-
-            <p>
-                After downloading, all files should be placed inside:
-            </p>
-
-            <code>data/raw/</code>
-
-            <p style="margin-top: 20px;">
-                Additional setup instructions are provided in:
-            </p>
-
-            <code>data/README.md</code>
-        </div>
     </div>
-</section>
+  </section>
 
-<section id="preprocessing">
+  <section id="team">
     <div class="container">
-        <div class="card">
-            <h2>Preprocessing Pipeline</h2>
 
-            <h3>1. Data Loading and Merging</h3>
-            <p>
-                Review CSV files are merged into a unified dataframe structure.
-                Corrupted rows are cleaned, rating columns are standardized,
-                and review/product datasets are merged using <code>product_id</code>.
-            </p>
+      <div class="section-header">
+        <div class="section-tag">Team</div>
+        <h2>Project Team</h2>
+        <p class="section-description">
+          This project was developed as part of the IE 423 Machine Learning Applications course.
+        </p>
+      </div>
 
-            <h3>2. Target Variable Construction</h3>
-            <p>
-                Product ratings are transformed into a binary classification problem:
-            </p>
+      <div class="team-grid">
 
-            <ul>
-                <li>1–3 stars → Negative / Neutral</li>
-                <li>4–5 stars → Positive</li>
-            </ul>
-
-            <h3>3. Data Cleaning</h3>
-            <p>
-                Missing review texts are removed, invalid scores are filtered,
-                and inconsistent text values are corrected.
-            </p>
-
-            <h3>4. Balanced Subsampling</h3>
-            <p>
-                A balanced subsampling strategy is applied to reduce computational cost
-                while preserving the overall class distribution.
-            </p>
-
-            <h3>5. Aspect-Based Sentiment Analysis (ABSA)</h3>
-            <p>
-                The project uses the Hugging Face ABSA model:
-            </p>
-
-            <code>Yangheng/deberta-v3-base-absa-v1.1</code>
-
-            <p style="margin-top: 20px;">
-                The model separately analyzes:
-            </p>
-
-            <ul>
-                <li>Skin sentiment</li>
-                <li>Hair sentiment</li>
-                <li>General product sentiment</li>
-            </ul>
-
-            <h3>6. Feature Engineering</h3>
-            <p>
-                Additional engineered variables include review length,
-                ingredient-based features, vegan indicators,
-                cruelty-free indicators, and user-product compatibility variables.
-            </p>
-
-            <h3>7. Class Imbalance Management</h3>
-            <p>
-                Controlled undersampling and stratified train-test splitting are used
-                to reduce majority-class bias and improve model fairness.
-            </p>
+        <div class="team-member">
+          <h3>İlke Bakangil</h3>
         </div>
-    </div>
-</section>
 
-<section id="research">
+        <div class="team-member">
+          <h3>Sıla Doğan</h3>
+        </div>
+
+        <div class="team-member">
+          <h3>Avsu Evren</h3>
+        </div>
+
+        <div class="team-member">
+          <h3>Yağmur Battal</h3>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="dataset">
     <div class="container">
-        <div class="card">
-            <h2>Research Questions</h2>
 
-            <div class="placeholder">
-                Research questions, methodologies, experiments, and interpretations
-                will be added here.
-            </div>
-        </div>
+      <div class="section-header">
+        <div class="section-tag">Dataset</div>
+        <h2>Sephora Products & Reviews Dataset</h2>
+        <p class="section-description">
+          The project uses the Sephora Products and Skincare Reviews dataset obtained from Kaggle.
+        </p>
+      </div>
+
+      <div class="soft-card">
+
+        <p>
+          The dataset combines structured product information, customer-related variables,
+          and unstructured textual review data collected from Sephora’s online platform.
+        </p>
+
+        <p>
+          The structured variables include:
+        </p>
+
+        <ul>
+          <li>Brand information</li>
+          <li>Product categories</li>
+          <li>Product prices</li>
+          <li>Ingredients</li>
+          <li>Product highlights</li>
+          <li>Product ratings</li>
+        </ul>
+
+        <p>
+          In addition, the dataset contains customer characteristics such as skin type,
+          skin tone, and hair color.
+        </p>
+
+        <p>
+          The dataset contains more than 8,000 products and approximately 1 million reviews,
+          making it highly suitable for sentiment analysis and machine learning applications.
+        </p>
+
+        <h3 style="margin-top: 35px;">Dataset Access</h3>
+
+        <p>
+          Due to its large size, the dataset is not included directly in the repository.
+        </p>
+
+        <p>
+          Kaggle Source:
+          <br><br>
+          <a href="https://www.kaggle.com/datasets/nadyinky/sephora-products-and-skincare-reviews" target="_blank">
+            Sephora Products and Skincare Reviews Dataset
+          </a>
+        </p>
+
+      </div>
+
     </div>
-</section>
+  </section>
 
-<section id="results">
+  <section id="preprocessing">
     <div class="container">
-        <div class="card">
-            <h2>Results & Visual Analytics</h2>
 
-            <div class="figure">
-                <img src="visuals/figures/01_balance.png" alt="Class Balance Figure">
-                <p>Class balance distribution before and after undersampling.</p>
-            </div>
+      <div class="section-header">
+        <div class="section-tag">Pipeline</div>
+        <h2>Preprocessing & Feature Engineering</h2>
+        <p class="section-description">
+          Before model training, the raw dataset undergoes several preprocessing and transformation stages.
+        </p>
+      </div>
 
-            <div class="figure">
-                <img src="visuals/figures/03_model_comparison_panel.png" alt="Model Comparison Figure">
-                <p>ROC curves, precision-recall curves, and confusion matrices.</p>
-            </div>
+      <div class="steps">
 
-            <div class="placeholder">
-                Additional tables, model interpretations,
-                and performance discussions will be added here.
-            </div>
+        <div class="step">
+          <h3>1. Data Loading & Merging</h3>
+          <p>
+            Review files are merged into a unified dataframe structure and standardized using product-based joins.
+          </p>
         </div>
-    </div>
-</section>
 
-<section id="discussion">
+        <div class="step">
+          <h3>2. Target Variable Construction</h3>
+          <p>
+            Ratings are transformed into a binary classification problem: Negative/Neutral and Positive.
+          </p>
+        </div>
+
+        <div class="step">
+          <h3>3. Data Cleaning</h3>
+          <p>
+            Missing review texts, invalid scores, and inconsistent text values are cleaned during preprocessing.
+          </p>
+        </div>
+
+        <div class="step">
+          <h3>4. Balanced Subsampling</h3>
+          <p>
+            Stratified balanced sampling is applied to reduce computational cost while preserving class distribution.
+          </p>
+        </div>
+
+        <div class="step">
+          <h3>5. Aspect-Based Sentiment Analysis (ABSA)</h3>
+          <p>
+            The project uses the Hugging Face model <strong>Yangheng/deberta-v3-base-absa-v1.1</strong>
+            to separately analyze skin, hair, and general product sentiment.
+          </p>
+        </div>
+
+        <div class="step">
+          <h3>6. Feature Engineering</h3>
+          <p>
+            Additional features include ingredient indicators, vegan labels,
+            review length, and user-product compatibility variables.
+          </p>
+        </div>
+
+        <div class="step">
+          <h3>7. Class Imbalance Management</h3>
+          <p>
+            Controlled undersampling and stratified train-test splitting are used
+            to improve model fairness and evaluation reliability.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section id="results">
     <div class="container">
-        <div class="card">
-            <h2>Discussion & Limitations</h2>
 
-            <div class="placeholder">
-                Discussion, limitations, future work,
-                and interpretation sections will be added here.
-            </div>
+      <div class="section-header">
+        <div class="section-tag">Results</div>
+        <h2>Visual Analytics & Model Results</h2>
+        <p class="section-description">
+          All visual outputs on this website are generated automatically by the project scripts.
+        </p>
+      </div>
+
+      <div class="figure-grid">
+
+        <div class="figure-card">
+          <img src="visuals/figures/01_balance.png" alt="Class Balance Figure">
+          <p>
+            Class distribution before and after undersampling.
+          </p>
         </div>
-    </div>
-</section>
 
-<section id="reproducibility">
+        <div class="figure-card">
+          <img src="visuals/figures/03_model_comparison_panel.png" alt="Model Comparison Panel">
+          <p>
+            ROC curves, Precision-Recall curves, and confusion matrix comparisons across models.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="placeholder">
+        Research questions, methodology details, additional visualizations,
+        and model interpretation sections will be added here.
+      </div>
+
+    </div>
+  </section>
+
+  <section id="discussion">
     <div class="container">
-        <div class="card">
-            <h2>Reproducibility</h2>
 
-            <p>
-                To reproduce the project results:
-            </p>
+      <div class="section-header">
+        <div class="section-tag">Discussion</div>
+        <h2>Discussion & Future Work</h2>
+      </div>
 
-            <ol style="padding-left: 20px;">
-                <li>Clone the GitHub repository</li>
-                <li>Install dependencies using <code>requirements.txt</code></li>
-                <li>Download the dataset from Kaggle</li>
-                <li>Place dataset files inside <code>data/raw/</code></li>
-                <li>Run preprocessing and modeling scripts from the <code>scripts/</code> directory</li>
-            </ol>
+      <div class="placeholder">
+        Discussion, limitations, future improvements,
+        and reproducibility instructions will be added here.
+      </div>
 
-            <div class="placeholder">
-                GitHub repository link and exact execution order
-                will be added here.
-            </div>
-        </div>
     </div>
-</section>
+  </section>
 
-<footer>
-    <p>
-        IE 423 — Machine Learning Applications Project
-    </p>
+  <footer>
+    <div class="container">
+      <h3>Customer Satisfaction in Sephora Products</h3>
 
-    <p style="margin-top: 10px;">
-        Customer Satisfaction in Sephora Products: A Data-Driven Machine Learning Approach
-    </p>
-</footer>
+      <p>
+        IE 423 — Machine Learning Applications
+      </p>
+    </div>
+  </footer>
 
 </body>
 </html>
-
+```
